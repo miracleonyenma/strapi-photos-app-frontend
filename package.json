@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^5.1.2",
+    "@tailwindcss/forms": "^0.5.2",
+    "nuxt": "3.0.0-rc.3"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^1.0.6"
+  }
+}

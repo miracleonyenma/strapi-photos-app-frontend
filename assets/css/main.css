@@ -1,0 +1,37 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@200,400,700,500,600,1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50;
+}
+
+.cta {
+  @apply p-2 px-3 bg-white border border-gray-200 rounded-lg;
+  @apply transition hover:-translate-y-0.5 active:shadow-inner active:translate-y-0.5;
+}
+
+.form-cont {
+  @apply flex items-center justify-center w-full py-12;
+}
+
+.form {
+  @apply bg-white rounded-xl shadow-xl;
+}
+.form .wrapper {
+  @apply w-72 md:w-96 p-4;
+}
+
+.form-control {
+  @apply flex flex-col gap-1 py-1 w-full;
+}
+
+.form-input {
+  @apply border border-gray-200 rounded-lg w-full;
+}
+
+.action-cont {
+  @apply py-3;
+}
