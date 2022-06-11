@@ -12,13 +12,13 @@ const session = useSession();
       <nav class="site-nav">
         <ul class="links">
           <!-- Render Register link if no user in session -->
-          <li v-if="!session?.user" class="link">
+          <li v-if="!session.data?.user" class="link">
             <NuxtLink to="/auth/register">
               <button class="cta">Register</button>
             </NuxtLink>
           </li>
           <!-- Render Sign in link if no user in session -->
-          <li v-if="!session?.user" class="link">
+          <li v-if="!session.data?.user" class="link">
             <NuxtLink to="/auth/sign-in">
               <button class="cta">Sign in</button>
             </NuxtLink>
