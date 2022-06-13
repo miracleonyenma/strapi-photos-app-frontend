@@ -8,9 +8,40 @@ body {
   @apply bg-gray-50;
 }
 
+textarea.form-textarea {
+  @apply border border-gray-200 rounded-lg;
+}
+
+[disabled],
+[disabled] * {
+  @apply filter grayscale !cursor-not-allowed !transform-none;
+}
+
 .cta {
-  @apply p-2 px-3 bg-white border border-gray-200 rounded-lg;
+  @apply p-1.5 px-3 bg-white border border-gray-200 rounded-lg;
   @apply transition hover:-translate-y-0.5 active:shadow-inner active:translate-y-0.5;
+}
+
+.cta.w-icon {
+  @apply flex gap-2 items-center pl-1.5;
+}
+
+.icon {
+  @apply w-6 h-6;
+}
+
+.icon.stroke {
+  @apply stroke-gray-800;
+}
+
+.icon.solid {
+  @apply fill-gray-800;
+}
+
+.icon.animate-rotate {
+  @apply animate-spin;
+  animation-duration: 3s;
+  animation-direction: reverse;
 }
 
 .form-cont {
@@ -20,12 +51,17 @@ body {
 .form {
   @apply bg-white rounded-xl shadow-xl;
 }
+
 .form .wrapper {
   @apply w-72 md:w-96 p-4;
 }
 
+.form .input-section {
+  @apply flex flex-wrap gap-2;
+}
+
 .form-control {
-  @apply flex flex-col gap-1 py-1 w-full;
+  @apply flex flex-col gap-1 w-full;
 }
 
 .form-input {
@@ -33,5 +69,30 @@ body {
 }
 
 .action-cont {
-  @apply py-3;
+  @apply relative;
+}
+
+/* PAGES */
+.site-main {
+  @apply p-4;
+}
+
+.site-main>.wrapper {
+  @apply m-auto max-w-3xl py-8;
+}
+
+.pagination {
+  @apply py-4;
+}
+
+.pagination .list {
+  @apply flex flex-wrap items-center gap-1;
+}
+
+.pagination .list>* {
+  @apply grow;
+}
+
+.loading-state {
+  @apply w-full py-12 flex items-center justify-center;
 }

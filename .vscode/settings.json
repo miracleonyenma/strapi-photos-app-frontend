@@ -1,4 +1,5 @@
 {
+  "workbench.colorTheme": "Community Material Theme Ocean"
   // "editor.theme": "vs-dark",
   /**
    * Render vertical lines at the specified columns.
