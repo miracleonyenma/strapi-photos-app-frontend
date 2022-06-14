@@ -12,7 +12,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <main class="sign-out-main auth-main">
+  <main class="site-main sign-out-main">
     <div class="wrapper">
       <h3 class="text-3xl">Signing Out...</h3>
     </div>

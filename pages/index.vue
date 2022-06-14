@@ -34,6 +34,7 @@ const getPosts = async (page) => {
         }
         photo {
           data {
+            id
             attributes {
               url
             }

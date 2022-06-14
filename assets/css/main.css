@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gray-50;
+  @apply bg-gray-50 text-gray-800;
 }
 
 textarea.form-textarea {
@@ -22,7 +22,7 @@ textarea.form-textarea {
   @apply transition hover:-translate-y-0.5 active:shadow-inner active:translate-y-0.5;
 }
 
-.cta.w-icon {
+.w-icon {
   @apply flex gap-2 items-center pl-1.5;
 }
 
@@ -43,6 +43,7 @@ textarea.form-textarea {
   animation-duration: 3s;
   animation-direction: reverse;
 }
+
 
 .form-cont {
   @apply flex items-center justify-center w-full py-12;
@@ -69,7 +70,7 @@ textarea.form-textarea {
 }
 
 .action-cont {
-  @apply relative;
+  @apply flex gap-2 justify-between relative;
 }
 
 /* PAGES */
@@ -86,11 +87,11 @@ textarea.form-textarea {
 }
 
 .pagination .list {
-  @apply flex flex-wrap items-center gap-1;
+  @apply flex flex-wrap items-center justify-between gap-1;
 }
 
 .pagination .list>* {
-  @apply grow;
+  /* @apply grow; */
 }
 
 .loading-state {

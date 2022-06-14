@@ -1,38 +1,41 @@
-
 <!-- ./components/Editor.vue -->
 
 <script setup>
 // import icons
-import { PlusCircleIcon } from "@heroicons/vue/solid";
+import { PlusCircleIcon, XCircleIcon } from "@heroicons/vue/solid";
 
-// Get graphqlURL from runtime config
+// Get graphqlURL & strapiURL from runtime config
 const {
-  public: { graphqlURL },
+  public: { graphqlURL, strapiURL },
 } = useRuntimeConfig();
-
-// init useRouter
-const router = useRouter();
 
 // Get `user` & `session` application state
 const user = useUser();
-const session = useSession().value;
+const session = useSession();
+
+// Get global current post state
+const currentPost = usePost();
+const setCurrentPost = useSetPost;
+
+// to hold the image data from the current post
+const currentImages = ref([]);
 
 // data state
 const isLoading = ref(false);
 const data = ref(null);
-const error = ref({});
 
 // component states
 const imagesURL = ref([]);
 const images = ref({});
 const fileBtnText = ref("Choose Images");
 const caption = ref("");
+const action = ref("create");
 
 // header object for fetch request
 let headersList = {
   Accept: "*/*",
   // set authorization token
-  Authorization: `Bearer ${session.data.jwt}`,
+  Authorization: `Bearer ${session.value.data?.jwt}`,
   "Content-Type": "application/json",
 };
 
@@ -60,7 +63,6 @@ const previewImg = (e) => {
 
 // function to upload files to Strapi media library and get the uploaded file `ids`
 const uploadFiles = async () => {
-
   // mutation to upload multiple files
   const uploadMultipleMutation = {
     query: `
@@ -127,14 +129,18 @@ const uploadFiles = async () => {
   }
 };
 
-// function to create post
-const createPost = async (e) => {
+// function to run the create or edit post functions depending on the action
+const handleSubmit = (e) => {
   e.preventDefault();
-  isLoading.value = true;
-  
-  // run if images and caption are not null
-  if (images && caption) {
+  action.value == "create" ? createPost() : editPost();
+};
 
+// function to create post
+const createPost = async () => {
+  isLoading.value = true;
+
+  // run if images and caption are not null
+  if (images.value.length > 0 && caption) {
     // upload images and get the IDs
     let uploads = await uploadFiles();
 
@@ -195,9 +201,114 @@ const createPost = async (e) => {
     }
   }
 };
+
+// function to edit post
+const editPost = async () => {
+  isLoading.value = true;
+  // if caption is not null
+  if (caption) {
+    // set uploads to uploaded files if user selects new files to upload
+    // else, set uploads to images from the current post data
+    let uploads = images.value.length > 0 ? await uploadFiles().then((res) => res.map((file) => file.data)) : currentImages.value;
+    console.log({ uploads });
+    // query to update post
+    let updatePostQuery = {
+      query: `
+        mutation($id: ID!, $data: PostInput!) {
+          updatePost(id: $id, data: $data) {
+            data {
+              id
+              attributes {
+                user {
+                  data {
+                    id
+                  }
+                }
+                caption
+                photo {
+                  data {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        // set id to current post id
+        id: currentPost.value.id,
+        data: {
+          caption: caption.value,
+
+          // photo: [array of uploaded photo ids]
+          // e.g. photo: [21, 22, 23]
+          photo: uploads.map((file) => file.id),
+        },
+      },
+    };
+    try {
+      // send request to update post
+      const { updatePost, errors } = await sendReq(graphqlURL, { body: JSON.stringify(updatePostQuery), headers: headersList });
+
+      if (errors) throw Error(errors);
+
+      // save to state
+      data.value = updatePost;
+      // reload page
+      window.location.replace("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
+
+// function to reset action to "create"
+const resetAction = () => {
+  // set current post to empty object
+  setCurrentPost({});
+  console.log({ currentPost });
+  // reset component state
+  action.value = "create";
+  caption.value = "";
+  imagesURL.value = [];
+};
+
+// watch for changes in the current post data
+watch(
+  currentPost,
+  (post) => {
+    console.log(currentPost.value, post);
+    // catch block catches errors that occur whenever the state is reset
+    try {
+      // destructure post data
+      const {
+        attributes: { photo, caption: _caption },
+        action: _action,
+      } = post;
+      // generate image URLs and ids from post photo data
+      currentImages.value = photo.data.map((image) => {
+        console.log({image});
+        let src = strapiURL + "" + image.attributes.url;
+        let id = image.id;
+        return { src, id };
+      });
+      // set imagesURL to currentImages `src`
+      imagesURL.value = currentImages.value.map((image) => image.src);
+      // update component state to post data
+      caption.value = _caption;
+      action.value = _action;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  { deep: true }
+);
 </script>
 <template>
-  <form :disabled="isLoading || data" @submit="createPost" class="upload-form">
+  <form :disabled="isLoading || data" @submit="handleSubmit" class="upload-form">
     <div class="wrapper">
       <div class="form-control file">
         <div class="img-cont upload-img-cont">
@@ -212,16 +323,7 @@ const createPost = async (e) => {
           <span type="button" class="cta file-btn">
             {{ fileBtnText }}
           </span>
-          <input
-            :disabled="isLoading || data"
-            @change="previewImg"
-            id="image-input"
-            class="file-input"
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            multiple
-            required
-          />
+          <input :disabled="isLoading || data" @change="previewImg" id="image-input" class="file-input" type="file" accept=".png, .jpg, .jpeg" multiple />
         </label>
       </div>
       <div class="form-control">
@@ -240,10 +342,16 @@ const createPost = async (e) => {
         </textarea>
       </div>
       <div class="action-cont">
-        <button :disabled="isLoading || data" type="submit" class="cta w-icon">
+        <!-- Submit button -->
+        <button :disabled="isLoading || data" type="submit" class="cta w-icon capitalize">
           <PlusCircleIcon v-if="!data" class="icon solid" />
-          <span v-if="!data">{{ !isLoading ? "Create Post" : "Hang on..." }}</span>
-          <span v-else>Post created! 🚀</span>
+          <span v-if="!data">{{ !isLoading ? `${action} Post` : "Hang on..." }}</span>
+          <span v-else>Successfull! 🚀</span>
+        </button>
+        <!-- Reset button -->
+        <button @click="resetAction" type="button" v-show="action == 'edit'" class="cta w-icon">
+          <XCircleIcon class="icon solid" />
+          <span>Reset</span>
         </button>
       </div>
     </div>
