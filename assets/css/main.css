@@ -44,6 +44,24 @@ textarea.form-textarea {
   animation-direction: reverse;
 }
 
+.dropdown {
+  @apply relative;
+}
+
+.dropdown-btn:hover ~ .dropdown-list,
+.dropdown-btn:focus ~ .dropdown-list,
+.dropdown-list:hover {
+  @apply visible;
+}
+
+.dropdown-list {
+  @apply invisible absolute flex flex-col gap-1.5 top-full right-0 bg-white border border-gray-200 shadow-xl rounded-lg overflow-hidden;
+}
+
+.dropdown-list li button {
+  @apply p-2 px-3 hover:bg-gray-100 active:shadow-inner;
+}
+
 
 .form-cont {
   @apply flex items-center justify-center w-full py-12;

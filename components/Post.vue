@@ -121,43 +121,15 @@ const deletePost = async () => {
         </div>
       </li>
     </ul>
-    <p class="caption">{{ post?.attributes?.caption }}</p>
-    <div class="info-cont text-xs text-gray-600">
-      <div class="time">{{ showDateTime(post) }}</div>
-    </div>
-    <div class="comment-cont">
-      <ChatIcon class="icon solid" />
-      <form class="comment-form">
-        <div class="form-control">
-          <textarea name="comment" id="comment" cols="30" rows="1" class="form-textarea comment-textarea" placeholder="Leave a comment"> </textarea>
-        </div>
-        <button class="cta submit-btn">
-          <PaperAirplaneIcon class="icon solid rotate-90" />
-        </button>
-      </form>
-    </div>
+    <article class="details">
+      <h3 class="caption">{{ post?.attributes?.caption }}</h3>
+      <span class="time">{{ showDateTime(post) }}</span>
+    </article>
+    <Comments :post="post" />
   </li>
 </template>
 
 <style scoped>
-.dropdown {
-  @apply relative;
-}
-
-.dropdown-btn:hover ~ .dropdown-list,
-.dropdown-btn:focus ~ .dropdown-list,
-.dropdown-list:hover {
-  @apply visible;
-}
-
-.dropdown-list {
-  @apply invisible absolute flex flex-col gap-1.5 top-full right-0 bg-white border border-gray-200 shadow-xl rounded-lg overflow-hidden;
-}
-
-.dropdown-list li button {
-  @apply p-2 px-3 hover:bg-gray-100 active:shadow-inner;
-}
-
 .post {
   @apply flex flex-col gap-2 p-4 bg-white border border-gray-200 rounded-xl;
 }
@@ -192,22 +164,10 @@ const deletePost = async () => {
 }
 
 .caption {
-  @apply font-medium;
+  @apply font-medium break-words;
 }
 
-.comment-cont {
-  @apply flex items-center gap-4 pt-4 border-t border-t-gray-200;
-}
-
-.comment-form {
-  @apply flex gap-2;
-}
-
-.comment-form .comment-textarea {
-  @apply w-full;
-}
-
-.submit-btn {
-  @apply h-min;
+.time {
+  @apply text-xs text-gray-400;
 }
 </style>
