@@ -1,7 +1,9 @@
 
 <!-- ./components/SiteHeader.vue -->
 <script setup>
+import { RefreshIcon } from "@heroicons/vue/outline";
 const session = useSession();
+console.log({ session: session });
 </script>
 <template>
   <header class="site-header">
@@ -10,15 +12,16 @@ const session = useSession();
         <figure class="site-logo"><h1>Photos</h1></figure>
       </NuxtLink>
       <nav class="site-nav">
-        <ul class="links">
+        <!-- Hide if session state is pending -->
+        <ul v-if="!session.pending" class="links">
           <!-- Render Register link if no user in session -->
-          <li v-if="!session?.user" class="link">
+          <li v-if="!session.data?.user" class="link">
             <NuxtLink to="/auth/register">
               <button class="cta">Register</button>
             </NuxtLink>
           </li>
           <!-- Render Sign in link if no user in session -->
-          <li v-if="!session?.user" class="link">
+          <li v-if="!session.data?.user" class="link">
             <NuxtLink to="/auth/sign-in">
               <button class="cta">Sign in</button>
             </NuxtLink>
@@ -30,6 +33,10 @@ const session = useSession();
             </NuxtLink>
           </li>
         </ul>
+        <!-- Display loading if session state is pending -->
+        <div v-else class="cta">
+          <RefreshIcon class="icon stroke animate-rotate" />
+        </div>
       </nav>
     </div>
   </header>

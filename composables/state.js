@@ -18,3 +18,12 @@ export const useSetSession = (data) => {
     useUser().value = data?.user;
   });
 };
+
+// READ CURRENT POST STATE
+export const usePost = () => useState("post", () => ({}));
+// SET CURRENT POST STATE
+export const useSetPost = (data) =>
+  useState("set-post", () => {
+    usePost().value = data;
+    console.log({ data, usePost: usePost().value });
+  });
