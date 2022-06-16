@@ -117,7 +117,7 @@ const deletePost = async () => {
     <ul class="photos">
       <li v-for="photo in post?.attributes?.photo.data" :key="photo.id" class="photo">
         <div class="img-cont">
-          <img :src="strapiURL + photo?.attributes?.url" :alt="post?.attributes?.caption" />
+          <img :src="photo?.attributes?.url" :alt="post?.attributes?.caption" />
         </div>
       </li>
     </ul>

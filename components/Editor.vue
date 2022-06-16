@@ -291,7 +291,7 @@ watch(
       // generate image URLs and ids from post photo data
       currentImages.value = photo.data.map((image) => {
         console.log({image});
-        let src = strapiURL + "" + image.attributes.url;
+        let src = image.attributes.url;
         let id = image.id;
         return { src, id };
       });
